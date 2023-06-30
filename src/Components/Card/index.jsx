@@ -2,6 +2,27 @@ import { PlusIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { UseShoppingCart } from "../../Hooks/UseShoppingCart";
 
 
+const RenderIcon = ( { isInCart, addProductsToCart } ) => {
+  if ( isInCart ) {
+    return (
+      <div className="absolute top-0 right-0 flex justify-center items-center bg-black w-6 h-6 rounded-full m-2 p-1">
+        <CheckIcon className="w-6 h-6 text-white" />
+      </div>
+    );
+  } else {
+    return (
+      <div
+        className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1"
+        onClick={addProductsToCart}
+      >
+        <PlusIcon className="w-6 h-6 text-black" />
+      </div>
+    );
+  }
+
+}
+
+
 export const Card = ( { data } ) => {
   const { category, creationAt, description, id, images, price, title, updatedAt } =  data
 
@@ -32,17 +53,8 @@ export const Card = ( { data } ) => {
     closeProductDetail();
     console.log(cartProducts);
   }
+  const isInCart = cartProducts.filter( product => product.id === id).length > 0;
 
-  // const renderIcon = () => {
-  //   return (
-  //     <div
-  //     className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1"
-  //     onClick={ ( event ) => addProductsToCart(event, data)}>
-  //     <PlusIcon className="w-6 h-6 text-black"></PlusIcon>
-       
-  //    </div>
-  //   );
-  // }
 
   return (
     <div 
@@ -51,12 +63,12 @@ export const Card = ( { data } ) => {
         <figure className="relative mb-2 w-full h-4/5">
             <span className="absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5">{ category.name }</span>
             <img className="w-full h-full object-cover rounded-lg" src={ images[0] } alt={ description } />
-            <div
-             className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1"
-             onClick={ ( event ) => addProductsToCart(event, data)}>
-             <PlusIcon className="w-6 h-6 text-black"></PlusIcon>
-              
-            </div>
+            {
+              <RenderIcon
+                isInCart={ isInCart }
+                addProductsToCart={ ( event ) => addProductsToCart(event, data)}
+              />
+            }
 
         </figure>
         <p className="flex justify-between">
@@ -66,3 +78,15 @@ export const Card = ( { data } ) => {
     </div>
   )
 }
+
+
+/*
+            <div
+             className="absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1"
+             onClick={ ( event ) => addProductsToCart(event, data)}>
+             <PlusIcon className="w-6 h-6 text-black"></PlusIcon>
+              
+            </div>
+
+
+*/

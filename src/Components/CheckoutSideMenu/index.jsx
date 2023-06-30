@@ -1,12 +1,46 @@
-import { useContext } from 'react'
 import { ShoppingCartContext } from '../../Context'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { OrderCard } from '../OrderCard'
+import { calculateTotalPriceOfCartProduct } from '../../utils'
+import { UseShoppingCart } from '../../Hooks/UseShoppingCart'
+import { Link } from 'react-router-dom'
+
+
 
 export const CheckoutSideMenu = () => {
-  const context = useContext(ShoppingCartContext);
-  const { isCheckoutSideMenuOpen, closeCheckoutSideMenu, cartProducts } = context;
-  console.log("CART: ",cartProducts);
+
+  const { 
+    isCheckoutSideMenuOpen, 
+    closeCheckoutSideMenu, 
+    cartProducts, 
+    setCartProducts, 
+    order, 
+    setOrder, 
+    shoppingCartCount,
+    setShoppingCartCount } = UseShoppingCart();
+
+  // console.log("CART: ",cartProducts);
+  // console.log("CART: ",cartProducts.length)
+
+  const handleDelete = ( id ) => {
+    const filteredProducts = cartProducts.filter( product => product.id !== id);
+    setCartProducts( filteredProducts );
+    setShoppingCartCount( shoppingCartCount - 1 );
+  }
+
+  const handleCheckout = () => {
+    const orderToAdd = {
+      date: '01.02.2023',
+      products: cartProducts,
+      totalProducts: cartProducts.length,
+      totalPrice: calculateTotalPriceOfCartProduct( cartProducts )
+    }
+
+    // Delete the products from the cart as you confirm the checkout :D
+    setOrder([...order, orderToAdd]);
+    setCartProducts([]);
+    setShoppingCartCount(0);
+  }
 
 
   return (
@@ -20,18 +54,30 @@ export const CheckoutSideMenu = () => {
                 onClick={ () => closeCheckoutSideMenu() }></XMarkIcon>
             </div>
         </div>
-        <div className="px-6 overflow-y-scroll">
+        <div className="px-6 overflow-y-scroll flex-1">
         {
           cartProducts.map( (product) => (
             <OrderCard 
               key={ product.id }
+              id={ product.id }
               title={ product.title  }
               imageUrl={ product.images }
               price={ product.price }
+              handleDelete={ handleDelete }
             />
           ))
         }
-      </div>
+        </div>
+
+        <div className="px-6 mb-6">
+          <p className="flex justify-between items-center mb-2">
+            <span className="font-light">Total: </span>
+            <span className="font-bold text-2xl">${ calculateTotalPriceOfCartProduct( cartProducts ) }</span>
+          </p>
+          <Link to={"/my-orders/last"}>
+            <button className="bg-black py-3 text-white w-full rounded-lg" onClick={() => handleCheckout() }>Checkout</button>
+          </Link>
+        </div>
     </aside>
   );
 }

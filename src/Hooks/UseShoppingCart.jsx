@@ -15,7 +15,9 @@ export const UseShoppingCart = () => {
         isCheckoutSideMenuOpen,
         setIsCheckoutSideMenuOpen,
         openCheckoutSideMenu,
-        closeCheckoutSideMenu 
+        closeCheckoutSideMenu,
+        order,
+        setOrder
       } = context;
     
   return {
@@ -29,6 +31,8 @@ export const UseShoppingCart = () => {
     isCheckoutSideMenuOpen,
     setIsCheckoutSideMenuOpen,
     openCheckoutSideMenu,
-    closeCheckoutSideMenu
+    closeCheckoutSideMenu,
+    order,
+    setOrder
   }
 }
